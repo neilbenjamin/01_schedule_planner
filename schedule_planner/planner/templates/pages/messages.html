@@ -1,0 +1,24 @@
+{% extends 'pages/base.html' %}
+{% block title %}Your Message Details{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Your Message Details</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">From: {{ message.name }} &lt;{{ message.email }}&gt;</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Submitted: {{ message.created_at|date:"F d, Y P" }}</h6>
+            <hr>
+            <p class="card-text"><strong>Message:</strong></p>
+            <p class="card-text">{{ message.message|linebreaksbr }}</p>
+            
+            <div class="mt-4">
+                <a href="{% url 'planner:contact' %}" class="btn btn-secondary">Submit Another Message</a>
+                <a href="{% url 'planner:index' %}" class="btn btn-primary me-2">Back to Schedule</a>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

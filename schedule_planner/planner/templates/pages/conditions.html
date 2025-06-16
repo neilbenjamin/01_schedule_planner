@@ -1,0 +1,46 @@
+{% extends 'pages/base.html' %}
+{% block title %}CONDITIONS{% endblock %}
+{% block content %}
+<section class="bg-primary p-3 p-md-4 p-xl-5">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-3 p-md-4 p-xl-5">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-5">
+                                    <h3>CONDITIONS</h3>
+                                </div>
+                                <ol class="conditions_list mt-5">
+                                    <li class="ol-list">Due to the nature of live events and the event industry,
+                                        schedules may change at short notice.</li>
+                                    <li class="ol-list">please ensure that the engineers on duty are familiar with the
+                                        technical requirements of the event.</li>
+                                    <li class="ol-list">Any changes and updates will be affected as soon as they occur
+                                        and communicated to all respective parties.</li>
+                                    <li class="ol-list">Please ensure that all additional information pertaining to each
+                                        event is communicated through to the company
+                                        in advance to allow for adequate preparation. This will include elements such as
+                                        dress code,
+                                        music specifications, speeches etc.. or any other information or data that is
+                                        pertinent to the dated event.
+                                    </li>
+                                    <li>Only logged in and approved users may modify the schedules.</li>
+                                    <a href="{% url 'planner:index'%}" class='btn btn-secondary mt-4'>Schedule</a>
+                                </ol>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <hr class="mt-2 mb-2 border-secondary-subtle">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

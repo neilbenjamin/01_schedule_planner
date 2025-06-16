@@ -1,0 +1,29 @@
+{% extends 'authentication/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Register{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <h3 class="mb-4 text-center">Create Your Account</h3>
+                <form action="{% url 'accounts:register' %}" method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <!-- Non-field errors should still be displayed separately -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger mt-3" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary mt-3 w-100">Register</button>
+                </form>
+                <p class="mt-4 text-center">
+                    Already have an account? <a href="{% url 'accounts:login' %}">Log in here</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+</html>
