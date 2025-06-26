@@ -1,0 +1,2 @@
+web: gunicorn schedule_planner.wsgi:application
+release: python manage.py migrate
