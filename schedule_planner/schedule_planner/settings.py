@@ -38,7 +38,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-&tlrs71*5ho#q+aw3#-c^
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Control DEBUG with an environment variable
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True' # 'False' by default
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Set ALLOWED_HOSTS dynamically for Render
 # Render automatically sets the RENDER_EXTERNAL_HOSTNAME environment variable.
@@ -80,8 +80,7 @@ ROOT_URLCONF = "schedule_planner.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [], # You might want to add BASE_DIR / 'templates' here for project-level templates
-        "APP_DIRS": True,
+        "DIRS": [],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
@@ -106,17 +105,12 @@ DATABASES = {
     }
 }
 
-# Override database settings for production (Render) using DATABASE_URL
-# Render automatically sets the DATABASE_URL environment variable for PostgreSQL.
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config(
         conn_max_age=600,
-        ssl_require=True  # Important for Render's PostgreSQL
+        ssl_require=True
     )
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -149,13 +143,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "/static/"  # Ensure it starts with a slash
+STATIC_URL = "/static/"
 
-# Path where Django will collect all static files for deployment
-STATIC_ROOT = BASE_DIR / "staticfiles"  # ADD THIS LINE
+STATIC_ROOT = BASE_DIR / "staticfiles" 
 
-# For Django 4.0+ and WhiteNoise 6.0+, configure static files storage
-# This tells Django to use WhiteNoise for serving static files in production
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
