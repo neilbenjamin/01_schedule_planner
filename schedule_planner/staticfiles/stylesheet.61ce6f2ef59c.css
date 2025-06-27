@@ -1,0 +1,12 @@
+body{
+    background-color: rgb(115, 115, 255);
+}
+
+td {
+    color: red;
+}
+
+.ol-list {
+    /* line-height: 210%; */
+    color: inherit;
+}
