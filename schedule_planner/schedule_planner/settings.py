@@ -39,6 +39,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-&tlrs71*5ho#q+aw3#-c^
 # SECURITY WARNING: don't run with debug turned on in production!
 # Control DEBUG with an environment variable
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+# DEBUG = True # TEMPORARY: Set to True for local debugging
 
 # Set ALLOWED_HOSTS dynamically for Render
 # Render automatically sets the RENDER_EXTERNAL_HOSTNAME environment variable.
@@ -81,6 +82,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
+        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
@@ -145,7 +147,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATIC_ROOT = BASE_DIR / "staticfiles" 
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STORAGES = {
     "staticfiles": {
