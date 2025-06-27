@@ -3,13 +3,13 @@
 Basic schedule planner to assist event coordinators with planning with entertainers and event crew over a given period of time. Admin users will have access to CRUD functionality while mid management will have access to the schedules. 
 
 ## Table of contents
-- 1. Features
-- 2. Installation 
-- 3. ENV Variables
-- 4. App operation
-- 5. Images
-- 6. Deployment
-- 7. License
+- 1 Features
+- 2 Installation 
+- 3 ENV Variables
+- 4 App operation
+- 5 Images
+- 6 Deployment
+- 7 License
 
 ## 1. Features
 
@@ -91,12 +91,38 @@ $ mv example.env .env
 $ pipenv install --dev
 ```
 
-## 3. Environment variables
+## 3. Environment Variables
 
-```
-SECRET_KEY='django-insecure-&tlrs71*5ho#q+aw3#-c^e$uf!nv66ri'
-DJANGO_DEBUG='yes'
-```
+Your project is configured to use environment variables for sensitive data and deployment-specific settings. You will need to set these variables in your deployment environment (e.g., in the "Environment" section of your web service on the Render Dashboard).
+
+#### Required Environment Variables:
+
+* **`SECRET_KEY`**
+    * **Purpose:** A unique, long, and random string used by Django for cryptographic signing (e.g., sessions, password resets). This is **critical for security** in production.
+    * **Value to set:** A very long, randomly generated string.
+    * **How to generate a new key:**
+        ```bash
+        python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+        ```
+    * **Example (do NOT use this exact value for your deployed app):** `my-very-long-and-random-secret-key-123abc456def789ghi`
+    * **Note:** Your `settings.py` includes a fallback hardcoded key for local development if this variable is not set. For production, **always set this environment variable.**
+
+* **`DATABASE_URL`**
+    * **Purpose:** The connection string for your PostgreSQL database. Your application uses `dj_database_url` to configure the database connection based on this string.
+    * **Value to set:** A URL string in the format `postgres://user:password@host:port/dbname`.
+    * **Note:** If you're using Render's managed PostgreSQL database, Render automatically provides this environment variable to your web service, so you typically don't need to set it manually.
+
+* **`DJANGO_DEBUG`**
+    * **Purpose:** Controls Django's `DEBUG` mode. When `DEBUG` is `True`, Django provides detailed error pages and certain development-only features. It should **always be `False` in production** for security.
+    * **Value to set:** `True` or `False` (as string literals).
+    * **Recommended for Production:** `False`
+    * **Example:** `DJANGO_DEBUG='False'`
+
+* **`ALLOWED_HOSTS`**
+    * **Purpose:** A comma-separated list of hostnames (domain names or IP addresses) that your Django application is allowed to serve. This is a vital security measure to prevent HTTP Host header attacks.
+    * **Value to set:** A comma-separated string of your application's domain(s).
+    * **Example:** `ALLOWED_HOSTS='your-app-name.onrender.com,www.your-custom-domain.com'`
+    * **Note:** Your `settings.py` is configured to automatically include Render's external hostname (`RENDER_EXTERNAL_HOSTNAME`) if it's available, so you might only need to set this for additional custom domains.
 
 ## 4. Use 
 - Create an account
