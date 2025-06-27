@@ -170,5 +170,5 @@ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 of the Software.
 
 ## Quick Links
-! [gitHub](https://github.com/neilbenjamin/01_schedule_planner/blob/main/README.md)
-! [render](https://event-planner-lrfl.onrender.com/accounts/login/?next=/)
+- [gitHub](https://github.com/neilbenjamin/01_schedule_planner/blob/main/README.md)
+- [render](https://event-planner-lrfl.onrender.com/accounts/login/?next=/)
