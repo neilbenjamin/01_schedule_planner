@@ -15,7 +15,12 @@ from django.urls import reverse_lazy
 
 # Import os for environment variables and dj_database_url for PostgreSQL
 import os
-import dj_database_url
+import dj_database_url  # Already there, good!
+
+# Add this import for WhiteNoise static files (after installing WhiteNoise)
+# from whitenoise.storage import CompressedManifestStaticFilesStorage # For older Django/WhiteNoise
+# For Django 4.0+ and WhiteNoise 6.0+, this is typically how you set it up in STORAGES
+# However, for simplicity, we'll configure it directly in STATICFILES_STORAGE
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,12 +30,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-&tlrs71*5ho#q+aw3#-c^e$uf!nv66ri"
+# Use an environment variable for SECRET_KEY in production!
+
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-&tlrs71*5ho#q+aw3#-c^e$uf!nv66ri")
+# The hardcoded string is a fallback for local dev if the env var isn't set,
+# but ensure the env var is set on Render.
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# Control DEBUG with an environment variable
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True' # 'False' by default
 
-ALLOWED_HOSTS = []
+# Set ALLOWED_HOSTS dynamically for Render
+# Render automatically sets the RENDER_EXTERNAL_HOSTNAME environment variable.
+# For local development, it will default to localhost and 127.0.0.1
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
 
 # Application definition
@@ -40,6 +55,7 @@ INSTALLED_APPS = [
     "accounts",
     "crispy_forms",
     'crispy_bootstrap5',
+    'django_extensions',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,6 +66,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -63,7 +80,7 @@ ROOT_URLCONF = "schedule_planner.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [], # You might want to add BASE_DIR / 'templates' here for project-level templates
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -81,12 +98,21 @@ WSGI_APPLICATION = "schedule_planner.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Default to SQLite for local development
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# Override database settings for production (Render) using DATABASE_URL
+# Render automatically sets the DATABASE_URL environment variable for PostgreSQL.
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        ssl_require=True  # Important for Render's PostgreSQL
+    )
 
 
 # Password validation
@@ -123,7 +149,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"  # Ensure it starts with a slash
+
+# Path where Django will collect all static files for deployment
+STATIC_ROOT = BASE_DIR / "staticfiles"  # ADD THIS LINE
+
+# For Django 4.0+ and WhiteNoise 6.0+, configure static files storage
+# This tells Django to use WhiteNoise for serving static files in production
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Restricted View redirect
 LOGIN_URL = reverse_lazy('accounts:login')
