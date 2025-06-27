@@ -1,19 +1,76 @@
-# Django 3.0+ project template
+# Django Schedule Planner
 
-This is a simple Django 3.0+ project template with my preferred setup. Most Django project templates make way too many assumptions or are just way too complicated. I try to make the least amount of assumptions possible while still trying provide a useful setup. Most of my projects are deployed to Heroku, so this is optimized for that but is not necessary.
+Basic schedule planner to assist event coordinators with planning with entertainers and event crew over a given period of time. Admin users will have access to CRUD functionality while mid management will have access to the schedules. 
 
 ## Features
 
-- Django 3.0+
-- Uses [Pipenv](https://github.com/kennethreitz/pipenv) - the officially recommended Python packaging tool from Python.org.
-- Development, Staging and Production settings with [django-configurations](https://django-configurations.readthedocs.org).
-- Get value insight and debug information while on Development with [django-debug-toolbar](https://django-debug-toolbar.readthedocs.org).
+- Django 5.2.1
 - Collection of custom extensions with [django-extensions](http://django-extensions.readthedocs.org).
 - HTTPS and other security related settings on Staging and Production.
-- Procfile for running gunicorn with New Relic's Python agent.
+- Procfile for running gunicorn with Render. 
+- PostgreSQL database in production mode and SQLite in development mode. 
+- Crispy Forms and Bootstrap for styling
 - PostgreSQL database support with psycopg2.
+- Whitenoise for managing static transfers
 
 ## How to install
+
+### 🚀 Getting Started
+
+Follow these steps to set up and run the project locally.
+
+#### Prerequisites
+
+* Python 3.x
+* pip (Python package installer)
+
+#### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/neilbenjamin/your-repo-name.git](https://github.com/neilbenjamin/your-repo-name.git)
+    cd your-repo-name
+    ```
+
+2.  **Create and activate a virtual environment:**
+
+    It's highly recommended to use a virtual environment to manage project dependencies isolation.
+
+    ```bash
+    # Create the virtual environment (named '.venv' in this example)
+    python3 -m venv .venv
+
+    # Activate the virtual environment:
+    # On macOS/Linux:
+    source .venv/bin/activate
+    # On Windows (Command Prompt):
+    # .venv\Scripts\activate.bat
+    # On Windows (PowerShell):
+    # .venv\Scripts\Activate.ps1
+    ```
+    *Note: If you use a virtual environment manager like `virtualenvwrapper` or `pyenv-virtualenv`, you can use its equivalent commands (e.g., `mkvirtualenv your-project-name` and `workon your-project-name`) instead of the `venv` commands above.*
+
+3.  **Install project dependencies:**
+    With your virtual environment activated:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Database Migrations:**
+    ```bash
+    python manage.py migrate
+    ```
+
+5.  **Create a superuser (optional, for admin access):**
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+6.  **Run the development server:**
+    ```bash
+    python manage.py runserver
+    ```
+    The application should now be accessible at `http://127.0.0.1:8000/`.
 
 ```bash
 $ django-admin.py startproject \
@@ -51,38 +108,15 @@ DJANGO_SECURE_PROXY_SSL_HEADER='HTTP_X_FORWARDED_PROTO,https'
 
 ## Deployment
 
-It is possible to deploy to Heroku or to your own server.
-
-### Heroku
-
-```bash
-$ heroku create
-$ heroku addons:add heroku-postgresql:hobby-dev
-$ heroku pg:promote DATABASE_URL
-$ heroku config:set ENVIRONMENT=PRODUCTION
-$ heroku config:set DJANGO_SECRET_KEY=`./manage.py generate_secret_key`
-```
+You can deploy to your choice of deployment options and based on those, you 
+may need to reconfigure your settings to match the host deployment reqeuirements.
 
 ## License
 
-The MIT License (MIT)
+Copyright (c) 2025 Neil Benjamin
 
-Copyright (c) 2012-2017 José Padilla
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
+Permission is restricted for any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
+the Software, including without limitation the rights to
 use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+of the Software.
