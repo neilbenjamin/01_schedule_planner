@@ -2,7 +2,16 @@
 
 Basic schedule planner to assist event coordinators with planning with entertainers and event crew over a given period of time. Admin users will have access to CRUD functionality while mid management will have access to the schedules. 
 
-## Features
+## Table of contents
+- 1. Features
+- 2. Installation 
+- 3. ENV Variables
+- 4. App operation
+- 5. Images
+- 6. Deployment
+- 7. License
+
+## 1. Features
 
 - Django 5.2.1
 - Collection of custom extensions with [django-extensions](http://django-extensions.readthedocs.org).
@@ -13,7 +22,7 @@ Basic schedule planner to assist event coordinators with planning with entertain
 - PostgreSQL database support with psycopg2.
 - Whitenoise for managing static transfers
 
-## How to install
+## 2. How to install
 
 ### 🚀 Getting Started
 
@@ -82,36 +91,29 @@ $ mv example.env .env
 $ pipenv install --dev
 ```
 
-## Environment variables
-
-These are common between environments. The `ENVIRONMENT` variable loads the correct settings, possible values are: `DEVELOPMENT`, `STAGING`, `PRODUCTION`.
+## 3. Environment variables
 
 ```
-ENVIRONMENT='DEVELOPMENT'
-DJANGO_SECRET_KEY='dont-tell-eve'
+SECRET_KEY='django-insecure-&tlrs71*5ho#q+aw3#-c^e$uf!nv66ri'
 DJANGO_DEBUG='yes'
 ```
 
-These settings(and their default values) are only used on staging and production environments.
+## 4. Use 
+- Create an account
+- Log in 
+- View schedule
+- add, update or delete
+- Contact Admin
 
-```
-DJANGO_SESSION_COOKIE_SECURE='yes'
-DJANGO_SECURE_BROWSER_XSS_FILTER='yes'
-DJANGO_SECURE_CONTENT_TYPE_NOSNIFF='yes'
-DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS='yes'
-DJANGO_SECURE_HSTS_SECONDS=31536000
-DJANGO_SECURE_REDIRECT_EXEMPT=''
-DJANGO_SECURE_SSL_HOST=''
-DJANGO_SECURE_SSL_REDIRECT='yes'
-DJANGO_SECURE_PROXY_SSL_HEADER='HTTP_X_FORWARDED_PROTO,https'
-```
+## 5 Images
 
-## Deployment
+
+## 6. Deployment
 
 You can deploy to your choice of deployment options and based on those, you 
 may need to reconfigure your settings to match the host deployment reqeuirements.
 
-## License
+## 7. License
 
 Copyright (c) 2025 Neil Benjamin
 
