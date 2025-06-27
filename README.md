@@ -136,22 +136,22 @@ Your project is configured to use environment variables for sensitive data and d
 Here are some screenshots and visual aids for the Schedule Planner:
 
 * **Dashboard View:**
-    ![Dashboard View](images/dashboard.png)
+    ![Dashboard View](./images/dashboard.png)
 
 * **Add Event Page:**
-    ![Add Event Page](images/add%20event.png)
+    ![Add Event Page](./images/add_event.png)
 
 * **Terms and Conditions:**
-    ![Terms and Conditions](images/conditions.png)
+    ![Terms and Conditions](./images/conditions.png)
 
 * **Contact Us Page:**
-    ![Contact Us Page](images/contact_us.png)
+    ![Contact Us Page](./images/contact_us.png)
 
 * **Delete Confirmation:**
-    ![Delete Confirmation](images/delete.png)
+    ![Delete Confirmation](./images/delete.png)
 
 * **User Registration:**
-    ![User Registration Page](images/register.png)
+    ![User Registration Page](./images/register.png)
 
 
 ## 6. Deployment
