@@ -20,15 +20,15 @@ def index(request: HttpRequest) -> HttpRequest:
     """
     # Display full entertainment schedule
     events = Event.objects.all().order_by('date', 'performance_time_start')
-    # context = {
-    #     'events': events,
-    # }
-    # if request.user.is_superuser:
-    #     return render(request, 'pages/planner.html', context)
-    # else:
-    #     return render(request, 'pages/planner_client.html', context)
+    context = {
+        'events': events,
+    }
+    if request.user.is_superuser:
+        return render(request, 'pages/planner.html', context)
+    else:
+        return render(request, 'pages/planner_client.html', context)
 
-    return render(request, 'pages/planner.html', {'events': events})
+    # return render(request, 'pages/planner.html', {'events': events})
 
 
 @login_required
