@@ -3,6 +3,19 @@ from django.db import models
 # Create your models here.
 
 
+class SoundEngineer(models.Model):
+    """Sound engineer we can assign to various events"""
+    name = models.CharField(max_length=100, unique=True)
+    contact_email = models.EmailField(blank=True, null=True)
+    contact_number = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
 class Event(models.Model):
     """Create a database table module for the details of the the event and
     the booking.
@@ -13,8 +26,13 @@ class Event(models.Model):
     performance_time_end = models.TimeField(verbose_name="End Time")
     venue = models.CharField(max_length=100)
     performer = models.CharField(max_length=100)
-    sound_engineer = models.CharField(max_length=100, blank=True, null=True)
-    # format for admin panel
+    sound_engineer = models.ForeignKey(SoundEngineer,
+                                       on_delete=models.SET_NULL,
+                                       blank=True,
+                                       null=True,
+                                       related_name='events_as_engineer')
+    event_notes = models.TextField(verbose_name="Event notes",
+                                   blank=True, null=True)
 
     def __str__(self):
         """Human readable string from Event object
@@ -22,6 +40,12 @@ class Event(models.Model):
             _type_: String of performer and date
         """
         return f"{self.performer} on {self.date} in {self.venue}"
+
+    class Meta:
+        ordering = ['date', 'performance_time_start']
+        permissions = [
+            ("can_manage_event_engineer", "can_assign_engineers")
+        ]
 
 
 class ContactMessage(models.Model):
