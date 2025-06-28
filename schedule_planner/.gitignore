@@ -1,0 +1,21 @@
+# Database
+*.sqlite3
+db.sqlite3
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+venv/
+
+# Media and Static files (if uploaded/collected)
+/media/
+/staticfiles/
+
+# Django specific
+*.log
+*.pot
+*.mo
+.DS_Store # macOS specific
