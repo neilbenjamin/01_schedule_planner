@@ -2,6 +2,9 @@ from django.db import models
 
 # Create your models here.
 
+# New sound engineer model linked to Event one to many as a foreign
+# key.
+
 
 class SoundEngineer(models.Model):
     """Sound engineer we can assign to various events"""
