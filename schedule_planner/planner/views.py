@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Event, ContactMessage
 from .forms import EventForm, ContactForm
