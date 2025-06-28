@@ -1,0 +1,17 @@
+{# planner/templates/pages/404.html #}
+{% extends 'pages/base.html' %} {# Extend your project's base template #}
+
+{% block title %}Page Not Found (404){% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="display-4 text-warning">404 - Page Not Found</h1>
+    <p class="lead">Oops! The page you're looking for doesn't exist.</p>
+    <p>
+        It might have been moved, deleted, or you might have mistyped the address.
+    </p>
+    <p>
+        <a href="{% url 'planner:index' %}" class="btn btn-primary mt-3">Go to Home Page</a>
+    </p>
+</div>
+{% endblock %}
