@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpRequest
-from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
+from django.contrib.auth.decorators import login_required, permission_required
 from .models import Event, ContactMessage
 from .forms import EventForm, ContactForm
+# from django.contrib import messages
 
 # Create your views here.
 
@@ -19,10 +20,19 @@ def index(request: HttpRequest) -> HttpRequest:
     """
     # Display full entertainment schedule
     events = Event.objects.all().order_by('date', 'performance_time_start')
+    # context = {
+    #     'events': events,
+    # }
+    # if request.user.is_superuser:
+    #     return render(request, 'pages/planner.html', context)
+    # else:
+    #     return render(request, 'pages/planner_client.html', context)
+
     return render(request, 'pages/planner.html', {'events': events})
 
 
 @login_required
+@permission_required('planner.add_event', raise_exception=True)
 def add_event(request: HttpRequest) -> HttpRequest:
     """GET/POST request from form that either displays a blank, new form for
     registation on a GET request, or saves the details to the db for a POST
@@ -54,6 +64,7 @@ def add_event(request: HttpRequest) -> HttpRequest:
 
 
 @login_required
+@permission_required('planner.edit_event', raise_exception=True)
 def edit_event(request: HttpRequest, pk: int) -> HttpRequest:
     """GET/POST Request object that retrieves the instance of the form and
     allows for editing and re-saving based on the pk, thereby updating the
@@ -79,6 +90,7 @@ def edit_event(request: HttpRequest, pk: int) -> HttpRequest:
 
 
 @login_required
+@permission_required('planner.delete_view', raise_exception=True)
 def delete_view(request: HttpRequest, pk: int) -> HttpRequest:
     """GET/POST request object that fetches the instance of the record
     based on the pk an removes it from the database, for logged in users.

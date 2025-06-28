@@ -18,6 +18,7 @@
                         <th>End Time</th>
                         <th>Venue</th>
                         <th>Performer</th>
+                        <th>Engineer</th>
                         {% if user.is_authenticated %} 
                         <th>Update</th>
                         <th>Delete</th>
@@ -32,6 +33,7 @@
                         <td>{{ event.performance_time_end|time:"H:i" }}</td>
                         <td>{{ event.venue }}</td>
                         <td>{{ event.performer }}</td>
+                        <td>{{ event.sound_engineer }}</td>
                         {% if user.is_authenticated %} {# Only show Edit button if user is logged in #}
                         <td>
                             <!-- Link to the edit view, passing the event's primary key -->
