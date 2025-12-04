@@ -1,7 +1,7 @@
 # Import models/sql tables from models.py and the forms modules from Django.
 
 from django import forms
-from .models import Event, ContactMessage, SoundEngineer
+from .models import Event, ContactMessage
 
 # Create a new form sub class that we can build form objects with while tapping
 # into Django's powerful pre-built bass or superclasses
