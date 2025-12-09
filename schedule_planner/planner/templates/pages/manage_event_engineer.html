@@ -5,30 +5,47 @@
 {% block title %}Manage Engineer for {{ event.performer }}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto p-4 max-w-md">
-    <h1 class="text-2xl font-bold mb-4">Manage Sound Engineer for "{{ event.performer }}" on {{ event.date }}</h1>
+<div class="container mt-4">
+    <h2 class="mb-4">Manage Sound Engineer for "{{ event.performer }}"</h2>
+    
+    <div class="mb-4 p-3 bg-light rounded border">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mb-1"><strong>Date:</strong> {{ event.date|date:"l, F j, Y" }}</p>
+                <p class="mb-1"><strong>Venue:</strong> {{ event.venue }}</p>
+            </div>
+            <div class="col-md-6">
+                <p class="mb-1"><strong>Start Time:</strong> {{ event.performance_time_start|time:"H:i" }}</p>
+                <p class="mb-1"><strong>End Time:</strong> {{ event.performance_time_end|time:"H:i" }}</p>
+            </div>
+        </div>
+    </div>
 
     {% if messages %}
-        <ul class="list-none p-0 mb-4">
+        <ul class="list-unstyled mb-4">
             {% for message in messages %}
-                <li class="p-3 rounded mb-2 {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                <li class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
                     {{ message }}
                 </li>
             {% endfor %}
         </ul>
     {% endif %}
 
-    <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        {% csrf_token %}
-        {{ form|crispy }} {# Render the form using crispy forms #}
-        <div class="flex items-center justify-between">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Update Engineer
-            </button>
-            <a href="{% url 'planner:index' %}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-                Cancel
-            </a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        Update Engineer
+                    </button>
+                    <a href="{% url 'planner:index' %}" class="btn btn-secondary ms-2">
+                        Cancel
+                    </a>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 {% endblock %}
