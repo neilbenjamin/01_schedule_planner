@@ -3,39 +3,70 @@
 
 {% block title %}Schedule - View Only{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* Mobile dynamics: Use clamp() for fluid typography based on viewport width (vw) */
+    .table th, .table td {
+        font-size: clamp(0.75rem, 2vw, 1rem); /* Scales between 12px and 16px */
+        padding: 0.5em !important; /* Use em for proportional spacing */
+        vertical-align: middle;
+    }
+
+    /* Dynamic header sizing */
+    .card-header h5 {
+        font-size: clamp(1rem, 3vw, 1.25rem);
+    }
+
+    /* Viewport height consideration for scrolling tables if needed */
+    .table-responsive {
+        max-height: 80vh; /* Prevent table from taking more than 80% of viewport height */
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">ENTERTAINMENT SCHEDULE</h2>
     
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Venue</th>
-                    <th>Performer</th>
-                    <th>Engineer</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for event in events %}
-                <tr>
-                    <td>{{ event.date|date:"D, M j, Y" }}</td>
-                    <td>{{ event.performance_time_start|time:"H:i" }}</td>
-                    <td>{{ event.performance_time_end|time:"H:i" }}</td>
-                    <td>{{ event.venue }}</td>
-                    <td>{{ event.performer }}</td>
-                    <td>{{ event.sound_engineer }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center">No entertainment events scheduled.</td> 
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    {% regroup events by date|date:"Y-W" as events_by_week %}
+
+    {% for week in events_by_week %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="my-0">Week {{ forloop.counter }} <small class="text-muted ms-2">(Week of {{ week.list.0.date|date:"F j, Y" }})</small></h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Venue</th>
+                            <th>Performer</th>
+                            <th>Engineer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in week.list %}
+                        <tr>
+                            <td>{{ event.date|date:"D, M j, Y" }}</td>
+                            <td>{{ event.performance_time_start|time:"H:i" }}</td>
+                            <td>{{ event.performance_time_end|time:"H:i" }}</td>
+                            <td>{{ event.venue }}</td>
+                            <td>{{ event.performer }}</td>
+                            <td>{{ event.sound_engineer }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+    {% empty %}
+        <div class="alert alert-info text-center">No entertainment events scheduled.</div>
+    {% endfor %}
 </div>
 {% endblock %}

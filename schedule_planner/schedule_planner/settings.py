@@ -52,6 +52,13 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS',
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
+# CSRF Trusted Origins for Render
+CSRF_TRUSTED_ORIGINS = []
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{os.environ['RENDER_EXTERNAL_HOSTNAME']}"
+    )
+
 
 # Application definition
 
