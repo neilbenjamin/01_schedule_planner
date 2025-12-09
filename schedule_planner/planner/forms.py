@@ -43,7 +43,7 @@ class ContactForm(forms.ModelForm):
         ]
 
 
-# class EventEngineerUpdateForm(forms.ModelForm):
-#     class Meta:
-#         model = Event
-#         fields = ['sound_engineer']
+class EventEngineerUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['sound_engineer']
