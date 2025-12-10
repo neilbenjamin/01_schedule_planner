@@ -41,8 +41,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY",
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Control DEBUG with an environment variable
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
-# DEBUG = False  # TEMPORARY: Set to True for local debugging
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    DEBUG = False
+else:
+    DEBUG = True
 
 # Set ALLOWED_HOSTS dynamically for Render
 # Render automatically sets the RENDER_EXTERNAL_HOSTNAME environment variable.
