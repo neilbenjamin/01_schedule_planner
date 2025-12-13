@@ -119,6 +119,9 @@ class Command(BaseCommand):
             
             # Get or Create Performer
             performer, _ = Performer.objects.get_or_create(name=performer_name)
+
+            # Get or Create Default Engineer
+            engineer, _ = SoundEngineer.objects.get_or_create(name="Ent. Tech", defaults={"contact_number": "N/A"})
             
             Event.objects.create(
                 date=event_date,
@@ -126,7 +129,7 @@ class Command(BaseCommand):
                 performance_time_end=end_time,
                 venue=venue,
                 performer=performer,
-                sound_engineer=None,
+                sound_engineer=engineer,
                 event_notes=notes
             )
             self.stdout.write(f"Created event: {performer_name} at {venue_name} on {event_date}")
