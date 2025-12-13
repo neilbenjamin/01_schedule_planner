@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Event, ContactMessage
 from .forms import EventForm, ContactForm
 # from django.contrib import messages
@@ -134,6 +136,18 @@ def contact_view(request: HttpRequest) -> HttpRequest:
         form = ContactForm(request.POST)
         if form.is_valid():
             contact_message = form.save()
+
+            # Send email
+            subject = f"New Contact Message from {contact_message.name}"
+            message = f"Name: {contact_message.name}\nEmail: {contact_message.email}\n\nMessage:\n{contact_message.message}"
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [settings.DEFAULT_FROM_EMAIL]
+
+            try:
+                send_mail(subject, message, from_email, recipient_list)
+            except Exception as e:
+                print(f"Error sending email: {e}")
+
             return redirect('planner:display_message', pk=contact_message.pk)
     else:
         form = ContactForm()
