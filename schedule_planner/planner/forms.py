@@ -18,7 +18,7 @@ class EventForm(forms.ModelForm):
             'performance_time_end',
             'venue',
             'performer',
-            'sound_engineer',
+            'activation',
         ]
         # Widgets Dict for UI to pick dates and times
         widgets = {
@@ -41,9 +41,3 @@ class ContactForm(forms.ModelForm):
             # 'is_read',
             # 'replied_to'
         ]
-
-
-class EventEngineerUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Event
-        fields = ['sound_engineer']

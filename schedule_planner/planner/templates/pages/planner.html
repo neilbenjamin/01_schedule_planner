@@ -55,13 +55,11 @@
                                 <th>End Time</th>
                                 <th>Venue</th>
                                 <th>Performer</th>
-                                <!-- Added Engineer -->
-                                <th>Engineer</th>
-                                {% if user.is_superuser or perms.planner.can_manage_event_engineer %} 
+                                <!-- Added Activation -->
+                                <th>Activation</th>
+                                {% if user.is_superuser %} 
                                 <th>Update</th>
-                                {% if user.is_superuser %}
                                 <th>Delete</th>
-                                {% endif %}
                                 {% endif %}
                             </tr>
                         </thead>
@@ -74,22 +72,16 @@
                                 <td>{{ event.performance_time_end|time:"H:i" }}</td>
                                 <td>{{ event.venue }}</td>
                                 <td>{{ event.performer }}</td>
-                                <td>{{ event.sound_engineer }}</td>
-                                {% if user.is_superuser or perms.planner.can_manage_event_engineer %} {# Only show Edit button if user is logged in #}
+                                <td>{{ event.activation }}</td>
+                                {% if user.is_superuser %} {# Only show Edit button if user is logged in #}
                                 <td>
-                                    {% if user.is_superuser %}
-                                        <!-- Link to the edit view, passing the event's primary key -->
-                                        <a href="{% url 'planner:edit_event' pk=event.pk %}" class="btn btn-sm btn-primary">Update</a>
-                                    {% elif perms.planner.can_manage_event_engineer %}
-                                        <a href="{% url 'planner:manage_event_engineer' pk=event.pk %}" class="btn btn-sm btn-primary">Update Engineer</a>
-                                    {% endif %}
+                                    <!-- Link to the edit view, passing the event's primary key -->
+                                    <a href="{% url 'planner:edit_event' pk=event.pk %}" class="btn btn-sm btn-primary">Update</a>
                                 </td>
-                                {% if user.is_superuser %}
                                 <td>
                                     <!-- Link to the edit view, passing the event's primary key -->
                                     <a href="{% url 'planner:delete' pk=event.pk %}" class="btn btn-sm btn-warning">Delete</a>
                                 </td>
-                                {% endif %}
                                 {% endif %}
                             </tr>
                             {% endfor %}
