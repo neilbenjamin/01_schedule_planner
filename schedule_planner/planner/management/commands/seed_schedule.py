@@ -113,24 +113,20 @@ class Command(BaseCommand):
             except ValueError as e:
                 self.stdout.write(self.style.ERROR(f"Error parsing time {start_str} or {end_str}: {e}"))
                 continue
-            
+
             # Get or Create Venue
             venue, _ = Venue.objects.get_or_create(name=venue_name)
-            
+
             # Get or Create Performer
             performer, _ = Performer.objects.get_or_create(name=performer_name)
 
-            # Get or Create Default Engineer
-            engineer, _ = SoundEngineer.objects.get_or_create(name="Ent. Tech", defaults={"contact_number": "N/A"})
-            
             Event.objects.create(
                 date=event_date,
                 performance_time_start=start_time,
                 performance_time_end=end_time,
                 venue=venue,
                 performer=performer,
-                sound_engineer=engineer,
-                event_notes=notes
+                activation=notes
             )
             self.stdout.write(f"Created event: {performer_name} at {venue_name} on {event_date}")
 

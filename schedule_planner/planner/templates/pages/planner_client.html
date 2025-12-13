@@ -46,7 +46,7 @@
                             <th>End Time</th>
                             <th>Venue</th>
                             <th>Performer</th>
-                            <th>Engineer</th>
+                            <th>Activation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,7 +58,7 @@
                             <td>{{ event.performance_time_end|time:"H:i" }}</td>
                             <td>{{ event.venue }}</td>
                             <td>{{ event.performer }}</td>
-                            <td>{{ event.sound_engineer }}</td>
+                            <td>{{ event.activation }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

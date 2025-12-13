@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Event, ContactMessage
-from .forms import EventForm, ContactForm, EventEngineerUpdateForm
+from .forms import EventForm, ContactForm
 # from django.contrib import messages
 
 # Create your views here.
@@ -116,25 +116,6 @@ def delete_view(request: HttpRequest, pk: int) -> HttpRequest:
     else:
         # if method is GET or not POST, return the current form
         return render(request, 'pages/confirm_delete.html', {'event': event})
-
-
-@login_required
-@permission_required('planner.can_manage_event_engineer', raise_exception=True)
-def manage_event_engineer(request: HttpRequest, pk: int) -> HttpRequest:
-    """GET/POST request to update only the sound engineer for an event.
-    """
-    event = get_object_or_404(Event, pk=pk)
-    if request.method == 'POST':
-        form = EventEngineerUpdateForm(request.POST, instance=event)
-        if form.is_valid():
-            form.save()
-            return redirect('planner:index')
-    else:
-        form = EventEngineerUpdateForm(instance=event)
-    return render(request, 'pages/manage_event_engineer.html', {
-        'form': form,
-        'event': event
-    })
 
 
 def contact_view(request: HttpRequest) -> HttpRequest:

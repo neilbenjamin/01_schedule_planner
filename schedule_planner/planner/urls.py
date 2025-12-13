@@ -10,8 +10,6 @@ urlpatterns = [
     path('add/', views.add_event, name='add_event'),
     # EDIT
     path('edit/<int:pk>', views.edit_event, name="edit_event"),
-    path('manage-engineer/<int:pk>', views.manage_event_engineer,
-         name="manage_event_engineer"),
     # DELETE
     path('delete/<int:pk>', views.delete_view, name='delete'),
     # Conditions

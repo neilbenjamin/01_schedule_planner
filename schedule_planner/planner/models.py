@@ -55,13 +55,7 @@ class Event(models.Model):
     performance_time_end = models.TimeField(verbose_name="End Time")
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
-    sound_engineer = models.ForeignKey(SoundEngineer,
-                                       on_delete=models.SET_NULL,
-                                       blank=True,
-                                       null=True,
-                                       related_name='events_as_engineer')
-    event_notes = models.TextField(verbose_name="Event notes",
-                                   blank=True, null=True)
+    activation = models.CharField(max_length=200, verbose_name="Activation", blank=True, null=True)
 
     def __str__(self):
         """Human readable string from Event object
