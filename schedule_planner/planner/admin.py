@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, ContactMessage, SoundEngineer
+from .models import Event, ContactMessage, SoundEngineer, Venue, Performer
 
 # Register your models here.
 
@@ -18,3 +18,5 @@ class EventAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 admin.site.register(ContactMessage)
 admin.site.register(SoundEngineer)
+admin.site.register(Venue)
+admin.site.register(Performer)

@@ -49,17 +49,20 @@ else:
 # Set ALLOWED_HOSTS dynamically for Render
 # Render automatically sets the RENDER_EXTERNAL_HOSTNAME environment variable.
 # For local development, it will default to localhost and 127.0.0.1
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS',
-                               '127.0.0.1,localhost').split(',')
+allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost')
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',')]
+
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
+# Debugging: Print ALLOWED_HOSTS to logs to verify configuration
+print(f"DEBUG: ALLOWED_HOSTS={ALLOWED_HOSTS}")
+
 # CSRF Trusted Origins for Render
 CSRF_TRUSTED_ORIGINS = []
-if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
-    CSRF_TRUSTED_ORIGINS.append(
-        f"https://{os.environ['RENDER_EXTERNAL_HOSTNAME']}"
-    )
+for host in ALLOWED_HOSTS:
+    if host not in ['127.0.0.1', 'localhost']:
+        CSRF_TRUSTED_ORIGINS.append(f"https://{host}")
 
 
 # Application definition

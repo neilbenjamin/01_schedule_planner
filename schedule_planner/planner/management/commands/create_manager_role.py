@@ -55,4 +55,3 @@ class Command(BaseCommand):
             'IMPORTANT: Users assigned to this group must also have '
             '"Staff status" (is_staff=True) to log in to the Admin site.'
         ))
-

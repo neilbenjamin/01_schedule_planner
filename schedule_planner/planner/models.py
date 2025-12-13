@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 # Create your models here.
 
@@ -19,6 +20,31 @@ class SoundEngineer(models.Model):
         ordering = ['name']
 
 
+class Venue(models.Model):
+    """Venue model for event locations"""
+    name = models.CharField(max_length=100, unique=True)
+    address = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+class Performer(models.Model):
+    """Performer/DJ model"""
+    name = models.CharField(max_length=100, unique=True)
+    genre = models.CharField(max_length=50, blank=True, null=True)
+    contact_number = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
 class Event(models.Model):
     """Create a database table module for the details of the the event and
     the booking.
@@ -27,8 +53,8 @@ class Event(models.Model):
     date = models.DateField()
     performance_time_start = models.TimeField(verbose_name="Start Time")
     performance_time_end = models.TimeField(verbose_name="End Time")
-    venue = models.CharField(max_length=100)
-    performer = models.CharField(max_length=100)
+    venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
     sound_engineer = models.ForeignKey(SoundEngineer,
                                        on_delete=models.SET_NULL,
                                        blank=True,
