@@ -52,7 +52,7 @@
                     <tbody>
                         {% for event in week.list %}
                         <tr>
-                            <td>{{ event.date|date:"D, M j, Y" }}</td>
+                            <td>{{ event.date|date:"D j" }}</td>
                             <td>{{ event.performance_time_start|time:"H:i" }}</td>
                             <td>{{ event.performance_time_end|time:"H:i" }}</td>
                             <td>{{ event.venue }}</td>
