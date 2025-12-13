@@ -45,6 +45,17 @@ class Performer(models.Model):
         ordering = ['name']
 
 
+class Activation(models.Model):
+    """Activation type model"""
+    name = models.CharField(max_length=200, unique=True)
+    
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
 class Event(models.Model):
     """Create a database table module for the details of the the event and
     the booking.
@@ -55,7 +66,7 @@ class Event(models.Model):
     performance_time_end = models.TimeField(verbose_name="End Time")
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
-    activation = models.CharField(max_length=200, verbose_name="Activation", blank=True, null=True)
+    activation = models.ForeignKey(Activation, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         """Human readable string from Event object
