@@ -130,11 +130,13 @@ def contact_view(request: HttpRequest) -> HttpRequest:
         HttpRequest: Writes user data to the db and redirects to new display
         url.
     """
+    print(f"Contact view called. Method: {request.method}")
     # get form input
     if request.method == 'POST':
         # Bind user input
         form = ContactForm(request.POST)
         if form.is_valid():
+            print("Form is valid. Saving...")
             contact_message = form.save()
 
             # Send email
@@ -151,6 +153,8 @@ def contact_view(request: HttpRequest) -> HttpRequest:
                 print(f"Error sending email: {e}")
 
             return redirect('planner:display_message', pk=contact_message.pk)
+        else:
+            print(f"Form is invalid. Errors: {form.errors}")
     else:
         form = ContactForm()
     # In case of a GET or error, return a blank form.
