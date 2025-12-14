@@ -64,6 +64,16 @@ for host in ALLOWED_HOSTS:
     if host not in ['127.0.0.1', 'localhost']:
         CSRF_TRUSTED_ORIGINS.append(f"https://{host}")
 
+print(f"DEBUG: CSRF_TRUSTED_ORIGINS={CSRF_TRUSTED_ORIGINS}")
+
+# Render Security Settings
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    # Tell Django to trust the X-Forwarded-Proto header coming from the proxy
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Ensure cookies are only sent over HTTPS
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 
 # Application definition
 
