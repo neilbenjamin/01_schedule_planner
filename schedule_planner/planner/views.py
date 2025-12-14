@@ -5,6 +5,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import Event, ContactMessage
 from .forms import EventForm, ContactForm
+import logging
+
+logger = logging.getLogger(__name__)
 # from django.contrib import messages
 
 # Create your views here.
@@ -130,13 +133,13 @@ def contact_view(request: HttpRequest) -> HttpRequest:
         HttpRequest: Writes user data to the db and redirects to new display
         url.
     """
-    print(f"Contact view called. Method: {request.method}")
+    logger.info(f"Contact view called. Method: {request.method}")
     # get form input
     if request.method == 'POST':
         # Bind user input
         form = ContactForm(request.POST)
         if form.is_valid():
-            print("Form is valid. Saving...")
+            logger.info("Form is valid. Saving...")
             contact_message = form.save()
 
             # Send email
@@ -145,16 +148,16 @@ def contact_view(request: HttpRequest) -> HttpRequest:
             from_email = settings.DEFAULT_FROM_EMAIL
             recipient_list = [settings.DEFAULT_FROM_EMAIL]
 
-            print(f"Attempting to send email to {recipient_list} from {from_email}...")
+            logger.info(f"Attempting to send email to {recipient_list} from {from_email}...")
             try:
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-                print("Email sent successfully.")
+                logger.info("Email sent successfully.")
             except Exception as e:
-                print(f"Error sending email: {e}")
+                logger.error(f"Error sending email: {e}")
 
             return redirect('planner:display_message', pk=contact_message.pk)
         else:
-            print(f"Form is invalid. Errors: {form.errors}")
+            logger.warning(f"Form is invalid. Errors: {form.errors}")
     else:
         form = ContactForm()
     # In case of a GET or error, return a blank form.
