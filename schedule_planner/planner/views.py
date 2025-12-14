@@ -143,8 +143,10 @@ def contact_view(request: HttpRequest) -> HttpRequest:
             from_email = settings.DEFAULT_FROM_EMAIL
             recipient_list = [settings.DEFAULT_FROM_EMAIL]
 
+            print(f"Attempting to send email to {recipient_list} from {from_email}...")
             try:
-                send_mail(subject, message, from_email, recipient_list)
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                print("Email sent successfully.")
             except Exception as e:
                 print(f"Error sending email: {e}")
 
