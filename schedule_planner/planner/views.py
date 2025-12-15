@@ -41,6 +41,10 @@ def index(request: HttpRequest) -> HttpRequest:
 def send_event_notification(event, action_type):
     """Sends email notification to all users about an event change."""
     subject = f"Schedule Update: {action_type} - {event.venue}"
+    # Format times to remove seconds (HH:MM)
+    start_time = event.performance_time_start.strftime('%H:%M')
+    end_time = event.performance_time_end.strftime('%H:%M')
+
     message = f"""
 Hello,
 
@@ -49,7 +53,7 @@ A schedule update has been made.
 Action: {action_type}
 Venue: {event.venue}
 Date: {event.date}
-Time: {event.performance_time_start} - {event.performance_time_end}
+Time: {start_time} - {end_time}
 Performer: {event.performer}
 Activation: {event.activation}
 
