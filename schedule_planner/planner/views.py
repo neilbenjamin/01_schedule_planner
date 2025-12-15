@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from .models import Event, ContactMessage
 from .forms import EventForm, ContactForm
@@ -62,14 +62,14 @@ Please check the schedule for full details.
         logger.info(f"Sending notification to {len(recipient_list)} users.")
         try:
             # Send to DEFAULT_FROM_EMAIL, BCC everyone else to protect privacy
-            send_mail(
+            email = EmailMessage(
                 subject,
                 message,
                 settings.DEFAULT_FROM_EMAIL,
-                [settings.DEFAULT_FROM_EMAIL],
-                bcc=recipient_list,
-                fail_silently=False
+                [settings.DEFAULT_FROM_EMAIL],  # To
+                recipient_list,  # BCC
             )
+            email.send(fail_silently=False)
             logger.info("Notification sent successfully.")
         except Exception as e:
             logger.error(f"Error sending notification: {e}")
