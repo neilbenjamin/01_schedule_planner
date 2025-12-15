@@ -46,18 +46,20 @@ def send_event_notification(event, action_type):
     end_time = event.performance_time_end.strftime('%H:%M')
 
     message = f"""
-Hello,
+<p>Hi,</p>
 
-A schedule update has been made.
+<p>A schedule update has been made.</p>
 
-Action: {action_type}
-Venue: {event.venue}
-Date: {event.date}
-Time: {start_time} - {end_time}
-Performer: {event.performer}
+<p>
+Action: {action_type}<br>
+Venue: {event.venue}<br>
+Date: {event.date}<br>
+Time: {start_time} - {end_time}<br>
+Performer: {event.performer}<br>
 Activation: {event.activation}
+</p>
 
-Please check the schedule for full details.
+<p>Please check the <a href="https://planner.capedjco.co.za/">schedule</a> for full details.</p>
 """
     # Get all user emails, exclude those without emails
     recipient_list = list(User.objects.exclude(email='').values_list('email', flat=True))
@@ -73,6 +75,7 @@ Please check the schedule for full details.
                 [settings.DEFAULT_FROM_EMAIL],  # To
                 recipient_list,  # BCC
             )
+            email.content_subtype = "html"
             email.send(fail_silently=False)
             logger.info("Notification sent successfully.")
         except Exception as e:
