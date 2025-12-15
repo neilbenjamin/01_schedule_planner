@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Event, ContactMessage
@@ -37,6 +38,43 @@ def index(request: HttpRequest) -> HttpRequest:
     # return render(request, 'pages/planner.html', {'events': events})
 
 
+def send_event_notification(event, action_type):
+    """Sends email notification to all users about an event change."""
+    subject = f"Schedule Update: {action_type} - {event.venue}"
+    message = f"""
+Hello,
+
+A schedule update has been made.
+
+Action: {action_type}
+Venue: {event.venue}
+Date: {event.date}
+Time: {event.performance_time_start} - {event.performance_time_end}
+Performer: {event.performer}
+Activation: {event.activation}
+
+Please check the schedule for full details.
+"""
+    # Get all user emails, exclude those without emails
+    recipient_list = list(User.objects.exclude(email='').values_list('email', flat=True))
+
+    if recipient_list:
+        logger.info(f"Sending notification to {len(recipient_list)} users.")
+        try:
+            # Send to DEFAULT_FROM_EMAIL, BCC everyone else to protect privacy
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [settings.DEFAULT_FROM_EMAIL],
+                bcc=recipient_list,
+                fail_silently=False
+            )
+            logger.info("Notification sent successfully.")
+        except Exception as e:
+            logger.error(f"Error sending notification: {e}")
+
+
 @login_required
 @permission_required('planner.add_event', raise_exception=True)
 def add_event(request: HttpRequest) -> HttpRequest:
@@ -59,7 +97,12 @@ def add_event(request: HttpRequest) -> HttpRequest:
         # Check form validity
         if form.is_valid():
             # Save to DB
-            form.save()
+            event = form.save()
+            
+            # Check if user requested notification
+            if request.POST.get('action') == 'notify':
+                send_event_notification(event, "New Event Added")
+                
             # Redirect thereafter
             return redirect('planner:index')
     # conditional else return a blank form
@@ -88,7 +131,12 @@ def edit_event(request: HttpRequest, pk: int) -> HttpRequest:
         # to the class EventForm
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
-            form.save()
+            event = form.save()
+            
+            # Check if user requested notification
+            if request.POST.get('action') == 'notify':
+                send_event_notification(event, "Event Updated")
+                
             return redirect('planner:index')
     else:
         form = EventForm(instance=event)
