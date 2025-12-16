@@ -10,12 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
-from django.urls import reverse_lazy
-
 # Import os for environment variables and dj_database_url for PostgreSQL
 import os
+from pathlib import Path
+
 import dj_database_url  # Already there, good!
+from django.urls import reverse_lazy
 
 # Add this import for WhiteNoise static files (after installing WhiteNoise)
 # from whitenoise.storage import CompressedManifestStaticFilesStorage # For
@@ -34,14 +34,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 # Use an environment variable for SECRET_KEY in production!
 
-SECRET_KEY = os.environ.get("SECRET_KEY",
-                            "django-insecure-&tlrs71*5ho#q+aw3#-c^e$uf!nv66ri")
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "django-insecure-&tlrs71*5ho#q+aw3#-c^e$uf!nv66ri"
+)
 # The hardcoded string is a fallback for local dev if the env var isn't set,
 # but ensure the env var is set on Render.
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Control DEBUG with an environment variable
-if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+if "RENDER_EXTERNAL_HOSTNAME" in os.environ:
     DEBUG = False
 else:
     DEBUG = True
@@ -49,11 +50,11 @@ else:
 # Set ALLOWED_HOSTS dynamically for Render
 # Render automatically sets the RENDER_EXTERNAL_HOSTNAME environment variable.
 # For local development, it will default to localhost and 127.0.0.1
-allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost')
-ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',')]
+allowed_hosts_env = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost")
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",")]
 
-if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
-    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
+if "RENDER_EXTERNAL_HOSTNAME" in os.environ:
+    ALLOWED_HOSTS.append(os.environ["RENDER_EXTERNAL_HOSTNAME"])
 
 # Debugging: Print ALLOWED_HOSTS to logs to verify configuration
 print(f"DEBUG: ALLOWED_HOSTS={ALLOWED_HOSTS}")
@@ -61,15 +62,15 @@ print(f"DEBUG: ALLOWED_HOSTS={ALLOWED_HOSTS}")
 # CSRF Trusted Origins for Render
 CSRF_TRUSTED_ORIGINS = []
 for host in ALLOWED_HOSTS:
-    if host not in ['127.0.0.1', 'localhost']:
+    if host not in ["127.0.0.1", "localhost"]:
         CSRF_TRUSTED_ORIGINS.append(f"https://{host}")
 
 print(f"DEBUG: CSRF_TRUSTED_ORIGINS={CSRF_TRUSTED_ORIGINS}")
 
 # Render Security Settings
-if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+if "RENDER_EXTERNAL_HOSTNAME" in os.environ:
     # Tell Django to trust the X-Forwarded-Proto header coming from the proxy
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     # Ensure cookies are only sent over HTTPS
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -81,8 +82,8 @@ INSTALLED_APPS = [
     "planner",
     "accounts",
     "crispy_forms",
-    'crispy_bootstrap5',
-    'django_extensions',
+    "crispy_bootstrap5",
+    "django_extensions",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -133,10 +134,9 @@ DATABASES = {
     }
 }
 
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600,
-        ssl_require=True
+if "DATABASE_URL" in os.environ:
+    DATABASES["default"] = dj_database_url.config(
+        conn_max_age=600, ssl_require=True
     )
 
 
@@ -186,7 +186,7 @@ STORAGES = {
 }
 
 # Restricted View redirect
-LOGIN_URL = reverse_lazy('accounts:login')
+LOGIN_URL = reverse_lazy("accounts:login")
 
 # Bootstratp & Crispy Form
 
@@ -202,35 +202,35 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Email Configuration
 if DEBUG:
     # In local development, print emails to the console instead of sending them
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     # These are still needed for the code to not crash, but won't be used for connection
-    EMAIL_HOST = 'localhost'
+    EMAIL_HOST = "localhost"
     EMAIL_PORT = 1025
-    EMAIL_HOST_USER = 'local_test@example.com'
-    EMAIL_HOST_PASSWORD = ''
-    DEFAULT_FROM_EMAIL = 'local_test@example.com'
+    EMAIL_HOST_USER = "local_test@example.com"
+    EMAIL_HOST_PASSWORD = ""
+    DEFAULT_FROM_EMAIL = "local_test@example.com"
 else:
     # In production (Render), use the real SMTP server
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('EMAIL_HOST')
-    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
-    EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False') == 'True'
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = os.environ.get("EMAIL_HOST")
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+    EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+    EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "False") == "True"
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+    DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
 # Logging Configuration
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
 }

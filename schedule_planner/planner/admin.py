@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Event, ContactMessage, SoundEngineer, Venue, Performer, Activation
+
+from .models import (
+    Activation,
+    ContactMessage,
+    Event,
+    Performer,
+    SoundEngineer,
+    Venue,
+)
 
 # Register your models here.
 
@@ -7,11 +15,16 @@ from .models import Event, ContactMessage, SoundEngineer, Venue, Performer, Acti
 class EventAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         # Check if user has the specific permission
-        if (request.user.has_perm('planner.can_manage_event_engineer') and
-                not request.user.is_superuser):
+        if (
+            request.user.has_perm("planner.can_manage_event_engineer")
+            and not request.user.is_superuser
+        ):
             # Return all fields EXCEPT 'sound_engineer' as read-only
-            return [f.name for f in self.model._meta.fields
-                    if f.name != 'sound_engineer']
+            return [
+                f.name
+                for f in self.model._meta.fields
+                if f.name != "sound_engineer"
+            ]
         return super().get_readonly_fields(request, obj)
 
 
