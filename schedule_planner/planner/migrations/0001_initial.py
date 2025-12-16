@@ -49,7 +49,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=100, unique=True)),
-                ("genre", models.CharField(blank=True, max_length=50, null=True)),
+                (
+                    "genre",
+                    models.CharField(blank=True, max_length=50, null=True),
+                ),
                 (
                     "contact_number",
                     models.CharField(blank=True, max_length=20, null=True),
@@ -76,7 +79,10 @@ class Migration(migrations.Migration):
                     "contact_email",
                     models.EmailField(blank=True, max_length=254, null=True),
                 ),
-                ("contact_number", models.CharField(max_length=100, unique=True)),
+                (
+                    "contact_number",
+                    models.CharField(max_length=100, unique=True),
+                ),
             ],
             options={
                 "ordering": ["name"],
@@ -95,7 +101,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=100, unique=True)),
-                ("address", models.CharField(blank=True, max_length=200, null=True)),
+                (
+                    "address",
+                    models.CharField(blank=True, max_length=200, null=True),
+                ),
             ],
             options={
                 "ordering": ["name"],
@@ -114,11 +123,19 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("date", models.DateField()),
-                ("performance_time_start", models.TimeField(verbose_name="Start Time")),
-                ("performance_time_end", models.TimeField(verbose_name="End Time")),
+                (
+                    "performance_time_start",
+                    models.TimeField(verbose_name="Start Time"),
+                ),
+                (
+                    "performance_time_end",
+                    models.TimeField(verbose_name="End Time"),
+                ),
                 (
                     "event_notes",
-                    models.TextField(blank=True, null=True, verbose_name="Event notes"),
+                    models.TextField(
+                        blank=True, null=True, verbose_name="Event notes"
+                    ),
                 ),
                 (
                     "performer",
@@ -140,13 +157,16 @@ class Migration(migrations.Migration):
                 (
                     "venue",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="planner.venue"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="planner.venue",
                     ),
                 ),
             ],
             options={
                 "ordering": ["date", "performance_time_start"],
-                "permissions": [("can_manage_event_engineer", "can_assign_engineers")],
+                "permissions": [
+                    ("can_manage_event_engineer", "can_assign_engineers")
+                ],
             },
         ),
     ]

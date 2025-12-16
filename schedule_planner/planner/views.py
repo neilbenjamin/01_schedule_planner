@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpRequest
+import logging
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
-from django.core.mail import send_mail, EmailMessage
-from django.conf import settings
-from .models import Event, ContactMessage
-from .forms import EventForm, ContactForm
-import logging
+from django.core.mail import EmailMessage, send_mail
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import ContactForm, EventForm
+from .models import ContactMessage, Event
 
 logger = logging.getLogger(__name__)
 # from django.contrib import messages
@@ -25,15 +27,16 @@ def index(request: HttpRequest) -> HttpRequest:
         HttpRequest: html page with the schedules
     """
     # Display full entertainment schedule
-    events = Event.objects.all().order_by('date', 'performance_time_start')
+    events = Event.objects.all().order_by("date", "performance_time_start")
     context = {
-        'events': events,
+        "events": events,
     }
-    if (request.user.is_superuser or
-            request.user.has_perm('planner.can_manage_event_engineer')):
-        return render(request, 'pages/planner.html', context)
+    if request.user.is_superuser or request.user.has_perm(
+        "planner.can_manage_event_engineer"
+    ):
+        return render(request, "pages/planner.html", context)
     else:
-        return render(request, 'pages/planner_client.html', context)
+        return render(request, "pages/planner_client.html", context)
 
     # return render(request, 'pages/planner.html', {'events': events})
 
@@ -42,8 +45,8 @@ def send_event_notification(event, action_type):
     """Sends email notification to all users about an event change."""
     subject = f"Schedule Update: {action_type} - {event.venue}"
     # Format times to remove seconds (HH:MM)
-    start_time = event.performance_time_start.strftime('%H:%M')
-    end_time = event.performance_time_end.strftime('%H:%M')
+    start_time = event.performance_time_start.strftime("%H:%M")
+    end_time = event.performance_time_end.strftime("%H:%M")
 
     message = f"""
 <p>Hi,</p>
@@ -59,10 +62,13 @@ Performer: {event.performer}<br>
 Activation: {event.activation}
 </p>
 
-<p>Please check the <a href="https://planner.capedjco.co.za/">schedule</a> for full details.</p>
+<p>Please check the <a href="https://planner.capedjco.co.za/">schedule</a>
+for full details.</p>
 """
     # Get all user emails, exclude those without emails
-    recipient_list = list(User.objects.exclude(email='').values_list('email', flat=True))
+    recipient_list = list(
+        User.objects.exclude(email="").values_list("email", flat=True)
+    )
 
     if recipient_list:
         logger.info(f"Sending notification to {len(recipient_list)} users.")
@@ -83,7 +89,7 @@ Activation: {event.activation}
 
 
 @login_required
-@permission_required('planner.add_event', raise_exception=True)
+@permission_required("planner.add_event", raise_exception=True)
 def add_event(request: HttpRequest) -> HttpRequest:
     """GET/POST request from form that either displays a blank, new form for
     registation on a GET request, or saves the details to the db for a POST
@@ -96,7 +102,7 @@ def add_event(request: HttpRequest) -> HttpRequest:
     """
     # Add new events to Events DB
     # Check CRUD method
-    if request.method == 'POST':
+    if request.method == "POST":
         # create instance of EventForm with the values passed in the Http POST
         # object to variable 'form', which will be instatiated/populated with
         # the POSRT data
@@ -105,22 +111,22 @@ def add_event(request: HttpRequest) -> HttpRequest:
         if form.is_valid():
             # Save to DB
             event = form.save()
-            
+
             # Check if user requested notification
-            if request.POST.get('action') == 'notify':
+            if request.POST.get("action") == "notify":
                 send_event_notification(event, "New Event Added")
-                
+
             # Redirect thereafter
-            return redirect('planner:index')
+            return redirect("planner:index")
     # conditional else return a blank form
     else:
         form = EventForm()
     # Serve the initial blank form on the initial GET request.
-    return render(request, 'pages/add_event.html', {'form': form})
+    return render(request, "pages/add_event.html", {"form": form})
 
 
 @login_required
-@permission_required('planner.edit_event', raise_exception=True)
+@permission_required("planner.edit_event", raise_exception=True)
 def edit_event(request: HttpRequest, pk: int) -> HttpRequest:
     """GET/POST Request object that retrieves the instance of the form and
     allows for editing and re-saving based on the pk, thereby updating the
@@ -133,25 +139,25 @@ def edit_event(request: HttpRequest, pk: int) -> HttpRequest:
     """
     # Retrieve existing event record or 404 if not found.
     event = get_object_or_404(Event, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         # Bind/Instantiate object submitted data to form for validation
         # to the class EventForm
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
             event = form.save()
-            
+
             # Check if user requested notification
-            if request.POST.get('action') == 'notify':
+            if request.POST.get("action") == "notify":
                 send_event_notification(event, "Event Updated")
-                
-            return redirect('planner:index')
+
+            return redirect("planner:index")
     else:
         form = EventForm(instance=event)
-    return render(request, 'pages/add_event.html', {'form': form})
+    return render(request, "pages/add_event.html", {"form": form})
 
 
 @login_required
-@permission_required('planner.delete_view', raise_exception=True)
+@permission_required("planner.delete_view", raise_exception=True)
 def delete_view(request: HttpRequest, pk: int) -> HttpRequest:
     """GET/POST request object that fetches the instance of the record
     based on the pk an removes it from the database, for logged in users.
@@ -166,16 +172,16 @@ def delete_view(request: HttpRequest, pk: int) -> HttpRequest:
     #  pk or 404 if not found.
     event = get_object_or_404(Event, pk=pk)
     # Conditional, if POST, delete
-    if request.method == 'POST':
+    if request.method == "POST":
         # Update table with delete.
         event.delete()
         # Redirect to desired path.
-        return redirect('planner:index')
+        return redirect("planner:index")
         # No need for catching the inner Else as the dedault form actin
         # will manage these exceptions if the forms are not valid.
     else:
         # if method is GET or not POST, return the current form
-        return render(request, 'pages/confirm_delete.html', {'event': event})
+        return render(request, "pages/confirm_delete.html", {"event": event})
 
 
 def contact_view(request: HttpRequest) -> HttpRequest:
@@ -190,7 +196,7 @@ def contact_view(request: HttpRequest) -> HttpRequest:
     """
     logger.info(f"Contact view called. Method: {request.method}")
     # get form input
-    if request.method == 'POST':
+    if request.method == "POST":
         # Bind user input
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -199,24 +205,36 @@ def contact_view(request: HttpRequest) -> HttpRequest:
 
             # Send email
             subject = f"New Contact Message from {contact_message.name}"
-            message = f"Name: {contact_message.name}\nEmail: {contact_message.email}\n\nMessage:\n{contact_message.message}"
+            message = (
+                f"Name: {contact_message.name}\n"
+                f"Email: {contact_message.email}\n\n"
+                f"Message:\n{contact_message.message}"
+            )
             from_email = settings.DEFAULT_FROM_EMAIL
             recipient_list = [settings.DEFAULT_FROM_EMAIL]
 
-            logger.info(f"Attempting to send email to {recipient_list} from {from_email}...")
+            logger.info(
+                f"Attempting to send email to {recipient_list} from {from_email}..."
+            )
             try:
-                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                send_mail(
+                    subject,
+                    message,
+                    from_email,
+                    recipient_list,
+                    fail_silently=False,
+                )
                 logger.info("Email sent successfully.")
             except Exception as e:
                 logger.error(f"Error sending email: {e}")
 
-            return redirect('planner:display_message', pk=contact_message.pk)
+            return redirect("planner:display_message", pk=contact_message.pk)
         else:
             logger.warning(f"Form is invalid. Errors: {form.errors}")
     else:
         form = ContactForm()
     # In case of a GET or error, return a blank form.
-    return render(request, 'pages/contact.html', {'form': form})
+    return render(request, "pages/contact.html", {"form": form})
 
 
 def display_message(request: HttpRequest, pk: int) -> HttpRequest:
@@ -228,7 +246,7 @@ def display_message(request: HttpRequest, pk: int) -> HttpRequest:
         HttpRequest: Displays the message.
     """
     message = get_object_or_404(ContactMessage, pk=pk)
-    return render(request, 'pages/messages.html', {'message': message})
+    return render(request, "pages/messages.html", {"message": message})
 
 
 def conditions_view(request: HttpRequest) -> HttpRequest:
@@ -239,4 +257,4 @@ def conditions_view(request: HttpRequest) -> HttpRequest:
     Returns:
         HttpRequest: Displays the conditions
     """
-    return render(request, 'pages/conditions.html')
+    return render(request, "pages/conditions.html")
