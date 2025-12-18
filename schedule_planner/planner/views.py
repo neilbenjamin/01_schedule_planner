@@ -1,4 +1,6 @@
 import logging
+import calendar
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -26,10 +28,44 @@ def index(request: HttpRequest) -> HttpRequest:
     Returns:
         HttpRequest: html page with the schedules
     """
-    # Display full entertainment schedule
-    events = Event.objects.all().order_by("date", "performance_time_start")
+    # Get year and month from query params, default to today
+    today = date.today()
+    try:
+        year = int(request.GET.get("year", today.year))
+        month = int(request.GET.get("month", today.month))
+    except ValueError:
+        year = today.year
+        month = today.month
+
+    # Calculate previous and next month for navigation
+    first_day = date(year, month, 1)
+
+    # Previous month
+    prev_month_date = first_day - timedelta(days=1)
+    prev_year = prev_month_date.year
+    prev_month = prev_month_date.month
+
+    # Next month
+    # Get last day of current month, add 1 day
+    _, last_day_num = calendar.monthrange(year, month)
+    next_month_date = date(year, month, last_day_num) + timedelta(days=1)
+    next_year = next_month_date.year
+    next_month = next_month_date.month
+
+    # Display full entertainment schedule for the selected month
+    events = Event.objects.filter(
+        date__year=year, date__month=month
+    ).order_by("date", "performance_time_start")
+
     context = {
         "events": events,
+        "current_year": year,
+        "current_month": month,
+        "current_month_name": calendar.month_name[month],
+        "prev_year": prev_year,
+        "prev_month": prev_month,
+        "next_year": next_year,
+        "next_month": next_month,
     }
     if request.user.is_superuser or request.user.has_perm(
         "planner.can_manage_event_engineer"
@@ -214,7 +250,8 @@ def contact_view(request: HttpRequest) -> HttpRequest:
             recipient_list = [settings.DEFAULT_FROM_EMAIL]
 
             logger.info(
-                f"Attempting to send email to {recipient_list} from {from_email}..."
+                f"Attempting to send email to "
+                f"{recipient_list} from {from_email}..."
             )
             try:
                 send_mail(

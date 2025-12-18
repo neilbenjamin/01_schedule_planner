@@ -27,7 +27,11 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">ENTERTAINMENT SCHEDULE</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="?year={{ prev_year }}&month={{ prev_month }}" class="btn btn-outline-primary">&laquo; Previous</a>
+        <h2 class="text-center mb-0">{{ current_month_name|upper }} {{ current_year }} SCHEDULE</h2>
+        <a href="?year={{ next_year }}&month={{ next_month }}" class="btn btn-outline-primary">Next &raquo;</a>
+    </div>
     
     {% regroup events by date|date:"Y-W" as events_by_week %}
 
