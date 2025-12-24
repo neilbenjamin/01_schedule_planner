@@ -18,4 +18,4 @@ venv/
 *.log
 *.pot
 *.mo
-.DS_Store # macOS specific
+.DS_Store # macOS specificservice_account.json

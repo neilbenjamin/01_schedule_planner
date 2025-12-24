@@ -27,6 +27,13 @@ class Venue(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
     address = models.CharField(max_length=200, blank=True, null=True)
+    google_calendar_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="The Google Calendar ID for this venue "
+                  "(e.g., 'primary' or 'c_123...@group.calendar.google.com')"
+    )
 
     def __str__(self):
         return self.name
@@ -75,6 +82,7 @@ class Event(models.Model):
     activation = models.ForeignKey(
         Activation, on_delete=models.SET_NULL, blank=True, null=True
     )
+    google_event_id = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         """Human readable string from Event object
