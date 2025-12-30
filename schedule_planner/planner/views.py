@@ -5,6 +5,8 @@ from datetime import date, timedelta
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
+from .utils.google_calendar import sync_events_from_google
+from django.contrib import messages
 from django.core.mail import EmailMessage, send_mail
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
@@ -295,3 +297,31 @@ def conditions_view(request: HttpRequest) -> HttpRequest:
         HttpRequest: Displays the conditions
     """
     return render(request, "pages/conditions.html")
+
+
+# Sync Google Calendar events view
+@login_required
+def sync_calendar_view(request: HttpRequest) -> HttpRequest:
+    """
+    View to trigger Google Calendar sync and display results manually.
+    Args: request (HttpRequest): GET Request
+    """
+    if not request.user.is_staff:
+        messages.error(request, "You do not have permission to sync "
+                                "calendars.")
+        return redirect("planner:index")
+
+    # run the sync
+    sync_messages = sync_events_from_google()
+
+    # Show feedback to user
+    updated_count = 0
+    if sync_messages:
+        updated_count = sum(1 for msg in sync_messages if 'Updated:' in msg)
+
+    if updated_count > 0:
+        messages.success(request, f"Sync Complete: {updated_count} event(s) updated from Google Calendar.")
+    else:
+        messages.info(request, "Sync Complete. No changes found.")
+
+    return redirect('planner:index')

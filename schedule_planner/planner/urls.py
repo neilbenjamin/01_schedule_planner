@@ -19,6 +19,7 @@ urlpatterns = [
     path("contact/", views.contact_view, name="contact"),
     # Messages
     path("message/<int:pk>", views.display_message, name="display_message"),
+    path('sync-calendar/', views.sync_calendar_view, name='sync_calendar'),
     # Manage Event Engineers
     # path('event/<int:event_pk>/edit-engineer/',
     #      views.manage_event_engineer, name='manage_event_engineer')

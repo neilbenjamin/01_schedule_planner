@@ -42,6 +42,12 @@
             <a href="{% url 'planner:add_event' %}" class="btn btn-success mb-3">Add New Event</a>
         </p>
         {% endif %}
+        
+        {% if user.is_staff %}
+        <a href="{% url 'planner:sync_calendar' %}" class="btn btn-warning" style="margin-left: 10px;">
+        Sync from Google
+        </a>
+        {% endif %}
 
         {% regroup events by date|date:"Y-W" as events_by_week %}
 

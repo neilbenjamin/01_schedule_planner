@@ -1,5 +1,8 @@
 import os
 import logging
+import datetime
+from planner.models import Event, Venue
+from django.utils.dateparse import parse_datetime
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from django.conf import settings
@@ -8,18 +11,50 @@ logger = logging.getLogger(__name__)
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SERVICE_ACCOUNT_FILE = os.path.join(settings.BASE_DIR, 'service_account.json')
-# The ID of the calendar to sync with. 
-# For a service account, if you share your personal calendar with the service account email,
+# The ID of the calendar to sync with.
+# For a service account, if you share your personal calendar with
+# the service account email,
 # this should be your personal email address (e.g., 'neil@example.com').
 # If using the service account's own calendar, use 'primary'.
-# CALENDAR_ID = 'primary' 
+# CALENDAR_ID = 'primary'
+
+
+def list_upcoming_events(calendar_id="primary", max_results=50):
+    """
+    Fetches upcoming events from Google Calendar.
+    """
+    service = get_calendar_service()
+    if not service:
+        return []
+
+    try:
+        # 'Z" indicates UTC Time
+        now = datetime.datetime.utcnow().isoformat() + 'Z'
+
+        events_result = service.events().list(
+            calendarId=calendar_id,
+            timeMin=now,
+            maxResults=max_results,
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+
+        events = events_result.get('items', [])
+        return events
+
+    except Exception as e:
+        logger.error(f"Error fetching Google Calendar Events: {e}")
+        return []
+
 
 def get_calendar_service():
     """
     Authenticates and returns the Google Calendar service.
     """
     if not os.path.exists(SERVICE_ACCOUNT_FILE):
-        logger.warning(f"Service account file not found at {SERVICE_ACCOUNT_FILE}. Google Calendar sync will be skipped.")
+        logger.warning(
+            f"Service account file not found at {SERVICE_ACCOUNT_FILE}."
+            f" Google Calendar sync will be skipped.")
         return None
 
     try:
@@ -31,6 +66,7 @@ def get_calendar_service():
     except Exception as e:
         logger.error(f"Failed to create Google Calendar service: {e}")
         return None
+
 
 def create_google_event(event_instance):
     """
@@ -46,17 +82,20 @@ def create_google_event(event_instance):
     try:
         # Determine which calendar ID to use
         # 1. Try the venue's specific calendar ID
-        # 2. Fallback to 'primary' (the service account's own calendar) or a global default
+        # 2. Fallback to 'primary' (the service account's own calendar) or
+        # a global default
         calendar_id = 'primary'
         if event_instance.venue and event_instance.venue.google_calendar_id:
             calendar_id = event_instance.venue.google_calendar_id
-        
-        event = service.events().insert(calendarId=calendar_id, body=event_body).execute()
+
+        event = service.events().insert(calendarId=calendar_id,
+                                        body=event_body).execute()
         logger.info(f"Created Google Calendar event: {event.get('id')} on calendar {calendar_id}")
         return event.get('id')
     except Exception as e:
         logger.error(f"Error creating Google Calendar event: {e}")
         return None
+
 
 def update_google_event(event_instance):
     """
@@ -88,6 +127,7 @@ def update_google_event(event_instance):
         logger.error(f"Error updating Google Calendar event: {e}")
         return None
 
+
 def delete_google_event(google_event_id, venue=None):
     """
     Deletes an event from Google Calendar.
@@ -109,6 +149,7 @@ def delete_google_event(google_event_id, venue=None):
         logger.info(f"Deleted Google Calendar event: {google_event_id} from calendar {calendar_id}")
     except Exception as e:
         logger.error(f"Error deleting Google Calendar event: {e}")
+
 
 def _build_event_body(event):
     """
@@ -138,3 +179,47 @@ def _build_event_body(event):
             'timeZone': settings.TIME_ZONE,
         },
     }
+
+
+def sync_events_from_google():
+    """
+    Syncs events from Google Calendar to Django.
+    Returns a list of status messages.
+    """
+    messages = []
+    venues = Venue.objects.exclude(google_calendar_id__isnull=True).exclude(google_calendar_id__exact='')
+    for venue in venues:
+        messages.append(f"Checking venues: {venue.name}")
+        google_events = list_upcoming_events(calendar_id=venue.google_calendar_id)
+
+        for g_event in google_events:
+            g_id = g_event.get('id')
+            summary = g_event.get('summary')
+            start_data = g_event.get('start', {})
+            end_data = g_event.get('end', {})
+
+            start_iso = start_data.get('dateTime', start_data.get('date'))
+            end_iso = end_data.get('dateTime', end_data.get('date'))
+
+            start_dt = parse_datetime(start_iso)
+            end_dt = parse_datetime(end_iso)
+
+            if not start_dt or not end_dt:
+                continue
+            try:
+                event = Event.objects.get(google_event_id=g_id)
+
+                if event.date != start_dt.date() or \
+                    event.performance_time_start != start_dt.time() or \
+                        event.performance_time_end != end_dt.time():
+
+                    Event.objects.filter(pk=event.pk).update(
+                        date=start_dt.date(),
+                        performance_time_start=start_dt.time(),
+                        performance_time_end=end_dt.time()
+                    )
+                    messages.append(f"Updated: {summary}")
+            except Event.DoesNotExist:
+                pass  # Skipping external event silently.
+
+    return messages
