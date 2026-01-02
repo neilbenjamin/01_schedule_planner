@@ -26,11 +26,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div id="planner-container" class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <a href="?year={{ prev_year }}&month={{ prev_month }}" class="btn btn-outline-primary">&laquo; Previous</a>
+        <a id="prev-month-btn" href="?year={{ prev_year }}&month={{ prev_month }}" class="btn btn-outline-primary">&laquo; Previous</a>
         <h2 class="text-center mb-0">{{ current_month_name|upper }} {{ current_year }} SCHEDULE</h2>
-        <a href="?year={{ next_year }}&month={{ next_month }}" class="btn btn-outline-primary">Next &raquo;</a>
+        <a id="next-month-btn" href="?year={{ next_year }}&month={{ next_month }}" class="btn btn-outline-primary">Next &raquo;</a>
     </div>
     
     {% regroup events by date|date:"Y-W" as events_by_week %}
@@ -74,4 +74,16 @@
         <div class="alert alert-info text-center">No entertainment events scheduled.</div>
     {% endfor %}
 </div>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+<script>
+var planner = document.getElementById('planner-container'); // wrap your calendar in a div with this id
+var hammer = new Hammer(planner);
+
+hammer.on('swipeleft', function() {
+  document.getElementById('next-month-btn').click();
+});
+hammer.on('swiperight', function() {
+  document.getElementById('prev-month-btn').click();
+});
+</script>
 {% endblock %}
