@@ -17,10 +17,11 @@
     <!-- Add extra Head content later -->
     {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body {% block body_bg %}{% endblock %}>
     <!-- # Add main content -->
     <!-- {% block heading_h1 %}{% endblock %} -->
     {% block content %}{% endblock %}
     <!-- Additional JS scripts -->
     {% block extra_js%}{% endblock %}
 </body>
+</html>

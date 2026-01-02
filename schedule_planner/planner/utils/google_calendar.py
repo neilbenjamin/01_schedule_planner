@@ -10,7 +10,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-SERVICE_ACCOUNT_FILE = os.path.join(settings.BASE_DIR, 'service_account.json')
+SERVICE_ACCOUNT_FILE = settings.GOOGLE_SERVICE_ACCOUNT_FILE
 # The ID of the calendar to sync with.
 # For a service account, if you share your personal calendar with
 # the service account email,

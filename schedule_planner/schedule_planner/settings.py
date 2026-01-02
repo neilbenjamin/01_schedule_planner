@@ -75,7 +75,11 @@ if "RENDER_EXTERNAL_HOSTNAME" in os.environ:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-
+# Path to Google service account file (Matches the Render secret file path)
+GOOGLE_SERVICE_ACCOUNT_FILE = os.environ.get(
+    "GOOGLE_SERVICE_ACCOUNT_FILE",
+    "/etc/secrets/service_accounts.json"
+)
 # Application definition
 
 INSTALLED_APPS = [
