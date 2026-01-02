@@ -118,6 +118,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
             # Custom CSRF failure view
             "builtins": [],
@@ -127,11 +128,6 @@ TEMPLATES = [
 
 # Use custom CSRF failure view
 CSRF_FAILURE_VIEW = "planner.views.custom_csrf_failure"
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
 
 WSGI_APPLICATION = "schedule_planner.wsgi.application"
 
@@ -216,7 +212,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 if DEBUG:
     # In local development, print emails to the console instead of sending them
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    # These are still needed for the code to not crash, but won't be used for connection
+    # These are still needed for the code to not crash, but won't be used for
+    # connection
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 1025
     EMAIL_HOST_USER = "local_test@example.com"
