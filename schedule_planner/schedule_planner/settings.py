@@ -118,6 +118,15 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
+            ],
+            # Custom CSRF failure view
+            "builtins": [],
+        },
+    }
+]
+
+# Use custom CSRF failure view
+CSRF_FAILURE_VIEW = "planner.views.custom_csrf_failure"
                 "django.contrib.messages.context_processors.messages",
             ],
         },

@@ -325,3 +325,11 @@ def sync_calendar_view(request: HttpRequest) -> HttpRequest:
         messages.info(request, "Sync Complete. No changes found.")
 
     return redirect('planner:index')
+
+
+def custom_csrf_failure(request, reason="", template_name="403_csrf.html"):
+    """Custom view for CSRF failure to show a friendly error page."""
+    from django.shortcuts import render
+    response = render(request, template_name, status=403)
+    response.reason = reason
+    return response

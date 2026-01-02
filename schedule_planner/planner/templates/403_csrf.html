@@ -1,0 +1,18 @@
+{% extends "pages/base.html" %}
+{% block title %}CSRF Verification Failed{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-warning text-center" style="max-width: 500px; margin: auto;">
+        <h2 class="mb-3"><i class="bi bi-exclamation-triangle-fill"></i> Security Warning</h2>
+        <p>Sorry, your session has expired or your request could not be verified for security reasons.</p>
+        <p>Please <strong>refresh the page</strong> and log in again.</p>
+        <a href="/accounts/login/" class="btn btn-primary mt-3">Go to Login</a>
+        <p class="mt-3 text-muted">This page will auto-refresh in 3 seconds.</p>
+    </div>
+</div>
+<script>
+  setTimeout(function() {
+    window.location.reload();
+  }, 2000); // Refresh after 3 seconds
+</script>
+{% endblock %}
