@@ -40,7 +40,7 @@
         {% if user.is_authenticated and user.is_superuser %}
         <div class="d-flex justify-content-center mb-3 gap-2">
             <a href="{% url 'planner:add_event' %}" class="btn btn-success">Add New Event</a>
-            <a href="{% url 'planner:sync_calendar' %}" class="btn btn-light">Sync from Google</a>
+            <a href="{% url 'planner:sync_calendar' %}" class="btn btn-outline-primary">Sync from Google</a>
         </div>
         {% endif %}
         
@@ -86,7 +86,7 @@
                                 </td>
                                 <td>
                                     <!-- Link to the edit view, passing the event's primary key -->
-                                    <a href="{% url 'planner:delete' pk=event.pk %}" class="btn btn-sm btn-warning">Delete</a>
+                                    <a href="{% url 'planner:delete' pk=event.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
                                 </td>
                                 {% endif %}
                             </tr>
