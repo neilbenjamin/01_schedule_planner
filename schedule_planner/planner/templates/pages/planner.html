@@ -100,18 +100,16 @@
             <div class="alert alert-info text-center">No entertainment events scheduled.</div>
         {% endfor %}
     </div>
-    {% endblock %}
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 <script>
-    var planner = document.getElementById('planner-container'); //wrap
-    var hammer = new Hammer(planner);
+var planner = document.getElementById('planner-container'); // wrap your calendar in a div with this id
+var hammer = new Hammer(planner);
 
-    hammer.on('swipeleft', function() {
-        document.getElementById('next-month-btn').click();
-        alert('Swiped left!');
-    });
-    hammer.on('swiperight', function() {
-        document.getElementById('prev-month-btn').click();
-        alert('Swiped right!');
-    });
+hammer.on('swipeleft', function() {
+  document.getElementById('next-month-btn').click();
+});
+hammer.on('swiperight', function() {
+  document.getElementById('prev-month-btn').click();
+});
 </script>
+    {% endblock %}
