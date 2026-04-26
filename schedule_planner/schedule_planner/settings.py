@@ -210,15 +210,25 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Email Configuration
 if DEBUG:
-    # In local development, print emails to the console instead of sending them
+    # # In local development, print emails to the console instead of sending
+    # them
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    # These are still needed for the code to not crash, but won't be used for
-    # connection
+    # # These are still needed for the code to not crash, but won't be used for
+    # # connection
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 1025
     EMAIL_HOST_USER = "local_test@example.com"
     EMAIL_HOST_PASSWORD = ""
     DEFAULT_FROM_EMAIL = "local_test@example.com"
+    # THIS IS THE LOCAL DEV LIVE SMTP CONFIG BELOW.
+    # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    # EMAIL_HOST = "mail.capedjco.co.za"
+    # EMAIL_PORT = 465  # or 587 if you want to test TLS
+    # EMAIL_USE_SSL = True  # True for 465, False for 587
+    # EMAIL_USE_TLS = False  # True for 587, False for 465
+    # EMAIL_HOST_USER = "info@capedjco.co.za"
+    # EMAIL_HOST_PASSWORD = "yourpassword"
+    # DEFAULT_FROM_EMAIL = "info@capedjco.co.za"
 else:
     # In production (Render), use the real SMTP server
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
